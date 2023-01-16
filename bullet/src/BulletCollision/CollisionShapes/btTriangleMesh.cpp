@@ -138,9 +138,6 @@ void	btTriangleMesh::addTriangle(const btVector3& vertex0,const btVector3& verte
 	addIndex(findOrAddVertex(vertex1,removeDuplicateVertices));
 	addIndex(findOrAddVertex(vertex2,removeDuplicateVertices));
 
-	btVector3 edge1 = vertex1 - vertex0;
-	btVector3 edge2 = vertex2 - vertex0;
-	m_p1p2p3.push_back(edge1.cross(edge2).length2());
 }
 
 float btTriangleMesh::getP1P2P3(unsigned int indx) const
@@ -284,6 +281,11 @@ void btTriangleMesh::computeVertexNormals()
 
 		m_3componentNormals[k] += normal;
 		m_3componentNormals[k].normalize();
+
+
+		btVector3 edge1 = wv1 - wv0;
+		btVector3 edge2 = wv2 - wv0;
+		m_p1p2p3.push_back(edge1.cross(edge2).length2());
 	}
 
 
