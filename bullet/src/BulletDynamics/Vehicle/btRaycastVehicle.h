@@ -227,15 +227,15 @@ class btDefaultVehicleRaycaster : public btVehicleRaycaster
 	btDynamicsWorld*	m_dynamicsWorld;
 public:
 
-	bool m_interpolateNormals;
+	int m_interpolateNormals;
 	btDefaultVehicleRaycaster(btDynamicsWorld* world)
 		:m_dynamicsWorld(world)
 	{
-		m_interpolateNormals = false;
+		m_interpolateNormals = 0;
 	}
 
 	virtual void* castRay(const btVector3& from,const btVector3& to, btVehicleRaycasterResult& result);
-	void set_m_interpolateNormals(bool on);
+	void set_m_interpolateNormals(int on);
 };
 
 // Write a ray result callback that saves the shapePart and triangleIndex

@@ -749,7 +749,7 @@ void	btRaycastVehicle::debugDraw(btIDebugDraw* debugDrawer)
 	}
 }
 
-void btDefaultVehicleRaycaster::set_m_interpolateNormals(bool on)
+void btDefaultVehicleRaycaster::set_m_interpolateNormals(int on)
 {
 	this->m_interpolateNormals = on;
 }
@@ -773,7 +773,7 @@ void* btDefaultVehicleRaycaster::castRay(const btVector3& from,const btVector3& 
 			result.m_hitNormalInWorld.normalize();
 			result.m_distFraction = rayCallback.m_closestHitFraction;
 
-			if (this->m_interpolateNormals == true)
+			if (this->m_interpolateNormals >0 )
 			{
 				btCollisionShape* shape = (btCollisionShape*)body->getCollisionShape();
 				if (shape->getShapeType() == TRIANGLE_MESH_SHAPE_PROXYTYPE)
@@ -783,13 +783,17 @@ void* btDefaultVehicleRaycaster::castRay(const btVector3& from,const btVector3& 
 					btTriangleMesh* mesh = dynamic_cast<btTriangleMesh*>(mesh_interface);
 					if (mesh != NULL && mesh->hasVertexNormals())
 					{
+#ifdef NORMAL_DEBUGGING
 						btVector3 n1 = btVector3(result.m_hitNormalInWorld.x(), result.m_hitNormalInWorld.y(), result.m_hitNormalInWorld.z());
-						// ..
-						result.m_hitNormalInWorld = mesh->interpolateMeshNormal(body->getWorldTransform(), mesh_interface, rayCallback.m_shapePart, rayCallback.m_triangleIndex, rayCallback.m_hitPointWorld);
-						//result.m_hitNormalInWorld = mesh->getInterpolatedNormal2(rayCallback.m_triangleIndex, rayCallback.m_hitPointWorld);
-						// ..
+#endif
+						if(this->m_interpolateNormals == 1)
+							result.m_hitNormalInWorld = mesh->interpolateMeshNormal(body->getWorldTransform(), mesh_interface, rayCallback.m_shapePart, rayCallback.m_triangleIndex, rayCallback.m_hitPointWorld);
+						else if (this->m_interpolateNormals == 2)
+							result.m_hitNormalInWorld = mesh->getInterpolatedNormal2(rayCallback.m_triangleIndex, rayCallback.m_hitPointWorld);
+#ifdef NORMAL_DEBUGGING
 						btVector3 n2 = btVector3(result.m_hitNormalInWorld.x(), result.m_hitNormalInWorld.y(), result.m_hitNormalInWorld.z());
 						printf("Tri index %d Hit Normal (%f x %f x %f) -> Bary Normal: (%f x %f x %f)\n", rayCallback.m_triangleIndex, n1.x(), n1.y(), n1.z(), n2.x(), n2.y(), n2.z());
+#endif
 					}
 				}
 			}
