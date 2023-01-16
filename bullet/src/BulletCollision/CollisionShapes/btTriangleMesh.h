@@ -28,15 +28,17 @@ class btTriangleMesh : public btTriangleIndexVertexArray
 {
 	btAlignedObjectArray<btVector3>	m_4componentVertices;
 	btAlignedObjectArray<btScalar>	m_3componentVertices;
+	btAlignedObjectArray<btVector3>	m_3componentNormals;
 
 	btAlignedObjectArray<unsigned int>		m_32bitIndices;
 	btAlignedObjectArray<unsigned short int>		m_16bitIndices;
 	bool	m_use32bitIndices;
 	bool	m_use4componentVertices;
-	
+
 
 	public:
 		btScalar	m_weldingThreshold;
+		bool		m_hasVNorms;
 
 		btTriangleMesh (bool use32bitIndices=true,bool use4componentVertices=true);
 
@@ -52,7 +54,13 @@ class btTriangleMesh : public btTriangleIndexVertexArray
 		///By default addTriangle won't search for duplicate vertices, because the search is very slow for large triangle meshes.
 		///In general it is better to directly use btTriangleIndexVertexArray instead.
 		void	addTriangle(const btVector3& vertex0,const btVector3& vertex1,const btVector3& vertex2, bool removeDuplicateVertices=false);
-		
+
+		btVector3 interpolateMeshNormal(const btTransform& transform, btStridingMeshInterface* mesh_interface, int subpart, int triangle, const btVector3& position);
+		btVector3 barycentricCoordinates(const btVector3& position, const btVector3& p1, const btVector3& p2, const btVector3& p3);
+		btVector3 getVertexNormal(int triangle);
+		bool hasVertexNormals();
+		void computeVertexNormals();
+
 		int getNumTriangles() const;
 
 		virtual void	preallocateVertices(int numverts);

@@ -59,7 +59,7 @@ m_weldingThreshold(0.0)
 		m_indexedMeshes[0].m_vertexStride = 3*sizeof(btScalar);
 	}
 
-
+	m_hasVNorms = false;
 }
 
 void	btTriangleMesh::addIndex(int index)
@@ -149,6 +149,181 @@ void btTriangleMesh::preallocateVertices(int numverts)
 		m_3componentVertices.reserve(numverts);
 	}
 }
+
+btVector3 btTriangleMesh::getVertexNormal(int index)
+{
+	return m_3componentNormals[index];
+}
+
+bool btTriangleMesh::hasVertexNormals()
+{
+	return m_hasVNorms;
+}
+
+void btTriangleMesh::computeVertexNormals()
+{
+	m_3componentNormals.reserve(m_4componentVertices.size());
+
+	for (int n = 0; n < m_32bitIndices.size(); n += 3)
+	{
+		int i = m_32bitIndices[n + 0];
+		int j = m_32bitIndices[n + 1];
+		int k = m_32bitIndices[n + 2];
+
+		btVector3 wv0 = m_4componentVertices[i];
+		btVector3 wv1 = m_4componentVertices[j];
+		btVector3 wv2 = m_4componentVertices[k];
+
+		btVector3 normal = (wv1 - wv0).cross(wv2 - wv0);
+		normal.normalize();
+
+		m_3componentNormals[i] += normal;
+		m_3componentNormals[i].normalize();
+
+		m_3componentNormals[j] += normal;
+		m_3componentNormals[j].normalize();
+
+		m_3componentNormals[k] += normal;
+		m_3componentNormals[k].normalize();
+	}
+
+
+	/*
+	const unsigned char* vertexbase;
+	int num_verts;
+	PHY_ScalarType type;
+	int stride;
+
+	const unsigned char* indexbase;
+	int indexstride;
+	int numfaces;
+	PHY_ScalarType indicestype;
+	int numverts = 0;
+	vnorms = new btVector3*[this->getNumSubParts()];
+
+	for (int partId = 0; partId < this->getNumSubParts(); partId++)
+	{
+		this->getLockedReadOnlyVertexIndexBase(&vertexbase, numverts, type, stride, &indexbase, indexstride, numfaces, indicestype, partId);
+		vnorms[partId] = new btVector3[numverts];
+
+		for (int triangle = 0; triangle < numfaces; triangle++)
+		{
+			const unsigned int* indices = (const unsigned int*)(indexbase + triangle * indexstride);
+
+			unsigned int i = indices[0], j = indices[1], k = indices[2];
+
+			float* gp1 = (float*)(vertexbase + i * stride);
+			float* gp2 = (float*)(vertexbase + j * stride);
+			float* gp3 = (float*)(vertexbase + k * stride);
+
+			btVector3 wv0, wv1, wv2;
+			wv0 = btVector3(gp1[0], gp1[1], gp1[2]);
+			wv1 = btVector3(gp2[0], gp2[1], gp2[2]);
+			wv2 = btVector3(gp3[0], gp3[1], gp3[2]);
+
+			btVector3 normal = (wv1 - wv0).cross(wv2 - wv0);
+			normal.normalize();
+
+			vnorms[partId][i] += normal;
+			vnorms[partId][i].normalize();
+
+			vnorms[partId][j] += normal;
+			vnorms[partId][j].normalize();
+
+			vnorms[partId][k] += normal;
+			vnorms[partId][k].normalize();
+		}
+
+		this->unLockReadOnlyVertexBase(partId);
+	}
+	*/
+
+	m_hasVNorms = true;
+
+}
+
+btVector3 btTriangleMesh::interpolateMeshNormal(const btTransform& transform, btStridingMeshInterface* mesh_interface, int subpart, int triangle, const btVector3& position)
+{
+	const unsigned char* vertexbase;
+	int num_verts;
+	PHY_ScalarType type;
+	int stride;
+
+	const unsigned char* indexbase;
+	int indexstride;
+	int numfaces;
+	PHY_ScalarType indicestype;
+
+	int numverts = 0;
+	mesh_interface->getLockedReadOnlyVertexIndexBase(&vertexbase, numverts, type, stride, &indexbase, indexstride, numfaces, indicestype, subpart);
+
+	// Calculate new barycentric coordinates
+	const unsigned int* indices = (const unsigned int*)(indexbase + triangle * indexstride);
+	unsigned int i = indices[0], j = indices[1], k = indices[2];
+	//StrideVertexAccessor positions(vertexbase, stride, 0);
+
+	const btVector3& meshScaling = mesh_interface->getScaling();
+	btVector3 barry;
+
+	if (type == PHY_FLOAT)
+	{
+		float* gp1= (float*)(vertexbase + i * stride);
+		float* gp2 = (float*)(vertexbase + j * stride);
+		float* gp3 = (float*)(vertexbase + k * stride);
+		
+		btVector3 p1 = btVector3(gp1[0] * meshScaling.getX(), gp1[1] * meshScaling.getY(), gp1[2] * meshScaling.getZ());
+		btVector3 p2 = btVector3(gp2[0] * meshScaling.getX(), gp2[1] * meshScaling.getY(), gp2[2] * meshScaling.getZ());
+		btVector3 p3 = btVector3(gp3[0] * meshScaling.getX(), gp3[1] * meshScaling.getY(), gp3[2] * meshScaling.getZ());
+
+		barry = this->barycentricCoordinates(transform.invXform(position), p1, p2, p3);
+	}
+	else
+	{
+		double* gp1 = (double*)(vertexbase + i * stride);
+		double* gp2 = (double*)(vertexbase + j * stride);
+		double* gp3 = (double*)(vertexbase + k * stride);
+
+		btVector3 p1 = btVector3(gp1[0] * meshScaling.getX(), gp1[1] * meshScaling.getY(), gp1[2] * meshScaling.getZ());
+		btVector3 p2 = btVector3(gp2[0] * meshScaling.getX(), gp2[1] * meshScaling.getY(), gp2[2] * meshScaling.getZ());
+		btVector3 p3 = btVector3(gp3[0] * meshScaling.getX(), gp3[1] * meshScaling.getY(), gp3[2] * meshScaling.getZ());
+
+		barry = this->barycentricCoordinates(transform.invXform(position), p1, p2, p3);
+	}
+
+	
+	// ..
+	// btVector3 n1 = this->getVertexNormal(i);
+	// btVector3 n2 = this->getVertexNormal(j);
+	// btVector3 n3 = this->getVertexNormal(k);
+	// printf("SmoothVehicleRaycaster: Trace Mesh Vertex Normals I: (%f x %f x %f) -> J: (%f x %f x %f) -> K: (%f x %f x %f)\n", n1.x(), n1.y(), n1.z(), n2.x(), n2.y(), n2.z(), n3.x(), n3.y(), n3.z());
+	// ..
+	// Interpolate from barycentric coordinates
+	// ..
+	btVector3 result = barry.x() * this->getVertexNormal(i) + barry.y() * this->getVertexNormal(j) + barry.z() * this->getVertexNormal(k);
+	// ..
+	// Transform back into world space
+	// ..
+	result = transform.getBasis() * result;
+	result.normalize();
+	mesh_interface->unLockReadOnlyVertexBase(subpart);
+	return result;
+}
+
+btVector3 btTriangleMesh::barycentricCoordinates(const btVector3& position, const btVector3& p1, const btVector3& p2, const btVector3& p3)
+{
+	btVector3 edge1 = p2 - p1;
+	btVector3 edge2 = p3 - p1;
+	// Area of triangle ABC
+	btScalar p1p2p3 = edge1.cross(edge2).length2();
+	// Area of BCP
+	btScalar p2p3p = (p3 - p2).cross(position - p2).length2(); // Area of CAP
+	btScalar p3p1p = edge2.cross(position - p3).length2();
+	btScalar s = btSqrt(p2p3p / p1p2p3);
+	btScalar t = btSqrt(p3p1p / p1p2p3);
+	btScalar w = 1.0f - s - t;
+	return btVector3(s, t, w);
+}
+
 
 void btTriangleMesh::preallocateIndices(int numindices)
 {

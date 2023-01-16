@@ -22,6 +22,11 @@
 #include "LinearMath/btIDebugDraw.h"
 #include "BulletDynamics/ConstraintSolver/btContactConstraint.h"
 
+#include "BulletCollision/CollisionShapes/btTriangleMesh.h" // Mackey Kinard
+#include "BulletCollision/CollisionShapes/btTriangleMeshShape.h" // Mackey Kinard
+#include "BulletCollision/CollisionShapes/btConvexHullShape.h" // Mackey Kinard
+
+
 #define ROLLING_INFLUENCE_FIX
 
 
@@ -749,7 +754,7 @@ void* btDefaultVehicleRaycaster::castRay(const btVector3& from,const btVector3& 
 {
 //	RayResultCallback& resultCallback;
 
-	btCollisionWorld::ClosestRayResultCallback rayCallback(from,to);
+	SmoothRayCastResultCallback rayCallback(from,to);
 
 	m_dynamicsWorld->rayTest(from, to, rayCallback);
 
@@ -763,8 +768,30 @@ void* btDefaultVehicleRaycaster::castRay(const btVector3& from,const btVector3& 
 			result.m_hitNormalInWorld = rayCallback.m_hitNormalWorld;
 			result.m_hitNormalInWorld.normalize();
 			result.m_distFraction = rayCallback.m_closestHitFraction;
+
+			if (this->m_interpolateNormals == true)
+			{
+				btCollisionShape* shape = (btCollisionShape*)body->getCollisionShape();
+				if (shape->getShapeType() == TRIANGLE_MESH_SHAPE_PROXYTYPE)
+				{
+					btTriangleMeshShape* mesh_shape = static_cast<btTriangleMeshShape*>(shape);
+					btStridingMeshInterface* mesh_interface = mesh_shape->getMeshInterface();
+					btTriangleMesh* mesh = dynamic_cast<btTriangleMesh*>(mesh_interface);
+					if (mesh != NULL && mesh->hasVertexNormals())
+					{
+						// btVector3 n1 = btVector3(result.m_hitNormalInWorld.x(), result.m_hitNormalInWorld.y(), result.m_hitNormalInWorld.z());
+						// ..
+						result.m_hitNormalInWorld = mesh->interpolateMeshNormal(body->getWorldTransform(), mesh_interface, rayCallback.m_shapePart, rayCallback.m_triangleIndex, rayCallback.m_hitPointWorld);
+						// ..
+						// btVector3 n2 = btVector3(result.m_hitNormalInWorld.x(), result.m_hitNormalInWorld.y(), result.m_hitNormalInWorld.z());
+						// printf("Perform Line Test - Hit Normal (%f x %f x %f) -> Bary Normal: (%f x %f x %f)\n", n1.x(), n1.y(), n1.z(), n2.x(), n2.y(), n2.z());
+					}
+				}
+			}
 			return (void*)body;
 		}
+
+		
 	}
 	return 0;
 }

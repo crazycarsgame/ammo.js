@@ -19,6 +19,8 @@ class btDynamicsWorld;
 #include "btWheelInfo.h"
 #include "BulletDynamics/Dynamics/btActionInterface.h"
 
+#include "BulletCollision/CollisionDispatch/btCollisionWorld.h" 
+
 class btVehicleTuning;
 
 ///rayCast vehicle, very special constraint that turn a rigidbody into a vehicle.
@@ -33,8 +35,10 @@ class btRaycastVehicle : public btActionInterface
 		///backwards compatibility
 		int	m_userConstraintType;
 		int	m_userConstraintId;
-
+		
 public:
+
+
 	class btVehicleTuning
 		{
 			public:
@@ -222,15 +226,57 @@ class btDefaultVehicleRaycaster : public btVehicleRaycaster
 {
 	btDynamicsWorld*	m_dynamicsWorld;
 public:
+
+	bool m_interpolateNormals;
 	btDefaultVehicleRaycaster(btDynamicsWorld* world)
 		:m_dynamicsWorld(world)
 	{
+		m_interpolateNormals = false;
 	}
 
 	virtual void* castRay(const btVector3& from,const btVector3& to, btVehicleRaycasterResult& result);
 
 };
 
+// Write a ray result callback that saves the shapePart and triangleIndex
+struct SmoothRayCastResultCallback : public btCollisionWorld::RayResultCallback
+{
+	SmoothRayCastResultCallback(const btVector3& rayFromWorld, const btVector3& rayToWorld) : m_rayFromWorld(rayFromWorld), m_rayToWorld(rayToWorld) { }
+
+	//used to calculate hitPointWorld from hitFraction
+	btVector3 m_rayFromWorld;
+	btVector3 m_rayToWorld;
+
+	btVector3 m_hitNormalWorld;
+	btVector3 m_hitPointWorld;
+
+	int m_shapePart;
+	int m_triangleIndex;
+
+	virtual btScalar addSingleResult(btCollisionWorld::LocalRayResult& rayResult, bool normalInWorldSpace)
+	{
+		btAssert(rayResult.m_hitFraction <= m_closestHitFraction);
+
+		if (rayResult.m_localShapeInfo)
+		{
+			m_shapePart = rayResult.m_localShapeInfo->m_shapePart;
+			m_triangleIndex = rayResult.m_localShapeInfo->m_triangleIndex;
+		}
+
+		m_collisionObject = rayResult.m_collisionObject;
+		m_closestHitFraction = rayResult.m_hitFraction;
+		m_hitPointWorld.setInterpolate3(m_rayFromWorld, m_rayToWorld, rayResult.m_hitFraction);
+		if (normalInWorldSpace)
+		{
+			m_hitNormalWorld = rayResult.m_hitNormalLocal;
+		}
+		else
+		{
+			m_hitNormalWorld = m_collisionObject->getWorldTransform().getBasis() * rayResult.m_hitNormalLocal; // transform normal into worldspace
+		}
+		return m_closestHitFraction;
+	}
+};
 
 #endif //BT_RAYCASTVEHICLE_H
 
