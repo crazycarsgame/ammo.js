@@ -124,15 +124,6 @@ int	btTriangleMesh::findOrAddVertex(const btVector3& vertex, bool removeDuplicat
 		
 void	btTriangleMesh::addTriangle(const btVector3& vertex0,const btVector3& vertex1,const btVector3& vertex2,bool removeDuplicateVertices)
 {
-
-	/*
-	btVector3 normal = (vertex1 - vertex0).cross(vertex2 - vertex0);
-	normal.normalize();
-
-	m_normals.push_back(normal);
-	*/
-
-
 	m_indexedMeshes[0].m_numTriangles++;
 	addIndex(findOrAddVertex(vertex0,removeDuplicateVertices));
 	addIndex(findOrAddVertex(vertex1,removeDuplicateVertices));
@@ -270,7 +261,7 @@ void btTriangleMesh::computeVertexNormals()
 		btVector3 wv1 = m_4componentVertices[j];
 		btVector3 wv2 = m_4componentVertices[k];
 
-		btVector3 normal = (wv1 - wv0).cross(wv2 - wv0);
+		btVector3 normal = -(wv1 - wv0).cross(wv2 - wv0);
 		normal.normalize();
 
 		m_3componentNormals[i] += normal;
