@@ -136,6 +136,8 @@ float btTriangleMesh::getP1P2P3(unsigned int indx) const
 	return m_p1p2p3[indx];
 }
 
+#define NORMAL_DEBUGGING
+
 btVector3 btTriangleMesh::getInterpolatedNormal2(unsigned int index, const btVector3& position) const
 {
 	btVector3 p1, p2, p3;
@@ -263,6 +265,12 @@ void btTriangleMesh::computeVertexNormals()
 
 		btVector3 normal = -(wv1 - wv0).cross(wv2 - wv0);
 		normal.normalize();
+
+		printf("tri %d %d %d \n", i, j, k);
+		printf("v1 %f %f %f \n", wv0.getX(), wv0.getY(), wv0.getZ());
+		printf("v2 %f %f %f \n", wv1.getX(), wv1.getY(), wv1.getZ());
+		printf("v3 %f %f %f \n", wv2.getX(), wv2.getY(), wv2.getZ());
+		printf("n %f %f %f \n", normal.getX(), normal.getY(), normal.getZ());
 
 		m_3componentNormals[i] += normal;
 		m_3componentNormals[i].normalize();
