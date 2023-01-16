@@ -29,6 +29,7 @@ class btTriangleMesh : public btTriangleIndexVertexArray
 	btAlignedObjectArray<btVector3>	m_4componentVertices;
 	btAlignedObjectArray<btScalar>	m_3componentVertices;
 	btAlignedObjectArray<btVector3>	m_3componentNormals;
+	btAlignedObjectArray<float>     m_p1p2p3;
 
 	btAlignedObjectArray<unsigned int>		m_32bitIndices;
 	btAlignedObjectArray<unsigned short int>		m_16bitIndices;
@@ -60,6 +61,8 @@ class btTriangleMesh : public btTriangleIndexVertexArray
 		btVector3 getVertexNormal(int triangle);
 		bool hasVertexNormals();
 		void computeVertexNormals();
+		float getP1P2P3(unsigned int indx) const;
+		btVector3 getInterpolatedNormal2(unsigned int index, const btVector3& position) const;
 
 		int getNumTriangles() const;
 

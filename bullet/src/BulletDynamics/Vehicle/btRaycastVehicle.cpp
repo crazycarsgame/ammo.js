@@ -785,7 +785,8 @@ void* btDefaultVehicleRaycaster::castRay(const btVector3& from,const btVector3& 
 					{
 						btVector3 n1 = btVector3(result.m_hitNormalInWorld.x(), result.m_hitNormalInWorld.y(), result.m_hitNormalInWorld.z());
 						// ..
-						result.m_hitNormalInWorld = mesh->interpolateMeshNormal(body->getWorldTransform(), mesh_interface, rayCallback.m_shapePart, rayCallback.m_triangleIndex, rayCallback.m_hitPointWorld);
+						//result.m_hitNormalInWorld = mesh->interpolateMeshNormal(body->getWorldTransform(), mesh_interface, rayCallback.m_shapePart, rayCallback.m_triangleIndex, rayCallback.m_hitPointWorld);
+						result.m_hitNormalInWorld = mesh->getInterpolatedNormal2(rayCallback.m_triangleIndex, rayCallback.m_hitPointWorld);
 						// ..
 						btVector3 n2 = btVector3(result.m_hitNormalInWorld.x(), result.m_hitNormalInWorld.y(), result.m_hitNormalInWorld.z());
 						printf("Perform Line Test - Hit Normal (%f x %f x %f) -> Bary Normal: (%f x %f x %f)\n", n1.x(), n1.y(), n1.z(), n2.x(), n2.y(), n2.z());

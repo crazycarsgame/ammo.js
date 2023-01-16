@@ -124,11 +124,105 @@ int	btTriangleMesh::findOrAddVertex(const btVector3& vertex, bool removeDuplicat
 		
 void	btTriangleMesh::addTriangle(const btVector3& vertex0,const btVector3& vertex1,const btVector3& vertex2,bool removeDuplicateVertices)
 {
+
+	/*
+	btVector3 normal = (vertex1 - vertex0).cross(vertex2 - vertex0);
+	normal.normalize();
+
+	m_normals.push_back(normal);
+	*/
+
+
 	m_indexedMeshes[0].m_numTriangles++;
 	addIndex(findOrAddVertex(vertex0,removeDuplicateVertices));
 	addIndex(findOrAddVertex(vertex1,removeDuplicateVertices));
 	addIndex(findOrAddVertex(vertex2,removeDuplicateVertices));
+
+	btVector3 edge1 = vertex1 - vertex0;
+	btVector3 edge2 = vertex2 - vertex0;
+	m_p1p2p3.push_back(edge1.cross(edge2).length2());
 }
+
+float btTriangleMesh::getP1P2P3(unsigned int indx) const
+{
+	return m_p1p2p3[indx];
+}
+
+btVector3 btTriangleMesh::getInterpolatedNormal2(unsigned int index, const btVector3& position) const
+{
+	btVector3 p1, p2, p3;
+	btVector3 n1, n2, n3;
+	/*
+	if (m_can_be_transformed)
+	{
+		// If the object of this mesh can be transformed, we need to compute
+		// the updated positions and normals before interpolating.
+		btVector3 q1, q2, q3;
+		getTriangle(index, &q1, &q2, &q3);
+		const btTransform& tf = m_body->getWorldTransform();
+		// The triangle verteces must be moved according to the transform of the body
+		p1 = tf(q1);
+		p2 = tf(q2);
+		p3 = tf(q3);
+		// The normals must be rotated according to the transform of the body
+		btVector3 m1, m2, m3;
+		getNormals(index, &m1, &m2, &m3);
+		n1 = tf.getBasis() * m1;
+		n2 = tf.getBasis() * m2;
+		n3 = tf.getBasis() * m3;
+	}
+	else
+	*/
+	{
+
+		int i = m_32bitIndices[index * 3 + 0];
+		int j = m_32bitIndices[index * 3 + 1];
+		int k = m_32bitIndices[index * 3 + 2];
+
+		p1 = m_4componentVertices[i];
+		p2 = m_4componentVertices[j];
+		p3 = m_4componentVertices[k];
+
+		n1 = m_3componentNormals[i];
+		n2 = m_3componentNormals[j];
+		n3 = m_3componentNormals[k];
+
+		//getNormals(index, &n1, &n2, &n3);
+	}
+
+	// Compute the Barycentric coordinates of position inside  triangle
+	// p1, p2, p3.
+
+	float p1p2p3 = getP1P2P3(index);
+
+	// Area of BCP
+	btScalar p2p3p = (p3 - p2).cross(position - p2).length2();
+
+	// Area of CAP
+	btVector3 edge2 = p3 - p1;
+	btScalar p3p1p = edge2.cross(position - p3).length2();
+	btScalar s = btSqrt(p2p3p / p1p2p3);
+	btScalar t = btSqrt(p3p1p / p1p2p3);
+	btScalar w = 1.0f - s - t;
+
+#ifdef NORMAL_DEBUGGING
+	btVector3 regen_position = s * p1 + t * p2 + w * p3;
+
+	if ((regen_position - position).length2() >= 0.0001f)
+	{
+		printf("bary:\n");
+		printf("new: %f %f %f\n", regen_position.getX(), regen_position.getY(), regen_position.getZ());
+		printf("old: %f %f %f\n", position.getX(), position.getY(), position.getZ());
+		printf("stw: %f %f %f\n", s, t, w);
+		printf("p1:  %f %f %f\n", p1.getX(), p1.getY(), p1.getZ());
+		printf("p2:  %f %f %f\n", p2.getX(), p2.getY(), p2.getZ());
+		printf("p3:  %f %f %f\n", p3.getX(), p3.getY(), p3.getZ());
+		printf("pos: %f %f %f\n", position.getX(), position.getY(), position.getZ());
+	}
+#endif
+
+	return s * n1 + t * n2 + w * n3;
+}   // getInterpolatedNormal
 
 int btTriangleMesh::getNumTriangles() const
 {
@@ -164,6 +258,11 @@ void btTriangleMesh::computeVertexNormals()
 {
 	m_3componentNormals.reserve(m_4componentVertices.size());
 
+	for (int n = 0; n < m_4componentVertices.size(); n++)
+	{
+		m_3componentNormals[n].setValue(0, 0, 0);
+	}
+
 	for (int n = 0; n < m_32bitIndices.size(); n += 3)
 	{
 		int i = m_32bitIndices[n + 0];
@@ -174,7 +273,7 @@ void btTriangleMesh::computeVertexNormals()
 		btVector3 wv1 = m_4componentVertices[j];
 		btVector3 wv2 = m_4componentVertices[k];
 
-		btVector3 normal = (wv2 - wv0).cross(wv1 - wv0);
+		btVector3 normal = (wv1 - wv0).cross(wv2 - wv0);
 		normal.normalize();
 
 		m_3componentNormals[i] += normal;
