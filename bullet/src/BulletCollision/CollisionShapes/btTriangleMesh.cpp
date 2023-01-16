@@ -16,7 +16,7 @@ subject to the following restrictions:
 
 #include "btTriangleMesh.h"
 
-#define NORMAL_DEBUGGING
+
 
 btTriangleMesh::btTriangleMesh (bool use32bitIndices,bool use4componentVertices)
 :m_use32bitIndices(use32bitIndices),

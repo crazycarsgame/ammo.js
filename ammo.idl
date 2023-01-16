@@ -957,7 +957,7 @@ interface btVehicleRaycaster {
 
 interface btDefaultVehicleRaycaster {
   void btDefaultVehicleRaycaster(btDynamicsWorld world);
-  void set_m_interpolateNormals(int on);
+  void set_m_interpolateNormals(long on);
 };
 btDefaultVehicleRaycaster implements btVehicleRaycaster;
 

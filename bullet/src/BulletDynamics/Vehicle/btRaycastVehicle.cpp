@@ -749,7 +749,7 @@ void	btRaycastVehicle::debugDraw(btIDebugDraw* debugDrawer)
 	}
 }
 
-void btDefaultVehicleRaycaster::set_m_interpolateNormals(int on)
+void btDefaultVehicleRaycaster::set_m_interpolateNormals(long on)
 {
 	this->m_interpolateNormals = on;
 }
