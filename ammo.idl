@@ -947,6 +947,7 @@ interface btVehicleTuning {
 interface btVehicleRaycasterResult {
     [Value] attribute btVector3 m_hitPointInWorld;
     [Value] attribute btVector3 m_hitNormalInWorld;
+
     attribute float m_distFraction;
 };
 
@@ -956,6 +957,7 @@ interface btVehicleRaycaster {
 
 interface btDefaultVehicleRaycaster {
   void btDefaultVehicleRaycaster(btDynamicsWorld world);
+  void set_m_interpolateNormals(boolean on);
 };
 btDefaultVehicleRaycaster implements btVehicleRaycaster;
 

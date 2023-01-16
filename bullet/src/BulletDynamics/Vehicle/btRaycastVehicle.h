@@ -235,7 +235,7 @@ public:
 	}
 
 	virtual void* castRay(const btVector3& from,const btVector3& to, btVehicleRaycasterResult& result);
-
+	void set_m_interpolateNormals(bool on);
 };
 
 // Write a ray result callback that saves the shapePart and triangleIndex
