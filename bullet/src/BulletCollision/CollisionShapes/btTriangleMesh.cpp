@@ -174,7 +174,7 @@ void btTriangleMesh::computeVertexNormals()
 		btVector3 wv1 = m_4componentVertices[j];
 		btVector3 wv2 = m_4componentVertices[k];
 
-		btVector3 normal = (wv1 - wv0).cross(wv2 - wv0);
+		btVector3 normal = (wv2 - wv0).cross(wv1 - wv0);
 		normal.normalize();
 
 		m_3componentNormals[i] += normal;
