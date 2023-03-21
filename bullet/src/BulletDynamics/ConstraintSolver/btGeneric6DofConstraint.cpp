@@ -42,7 +42,7 @@ btGeneric6DofConstraint::btGeneric6DofConstraint(btRigidBody& rbA, btRigidBody& 
 m_useLinearReferenceFrameA(useLinearReferenceFrameA),
 m_useOffsetForConstraintFrame(D6_USE_FRAME_OFFSET),
 m_flags(0),
-m_useSolveConstraintObsolete(D6_USE_OBSOLETE_METHOD)
+m_useSolveConstraintObsolete(D6_USE_OBSOLETE_METHOD)	
 {
 	calculateTransforms();
 }

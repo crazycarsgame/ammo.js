@@ -777,6 +777,25 @@ interface btPoint2PointConstraint {
 };
 btPoint2PointConstraint implements btTypedConstraint;
 
+//! Rotation Limit structure for generic joints
+interface btRotationalLimitMotor
+{
+    void btRotationalLimitMotor();
+    attribute float m_loLimit;//!< joint limit
+    attribute float m_hiLimit;//!< joint limit
+    attribute float m_targetVelocity;//!< target motor velocity
+    attribute float m_maxMotorForce;//!< max force on motor
+    attribute float m_maxLimitForce;//!< max force on limit
+    attribute float m_damping;//!< Damping.
+    attribute float m_limitSoftness;//! Relaxation factor
+    attribute float m_normalCFM;//!< Constraint force mixing factor
+    attribute float m_stopERP;//!< Error tolerance factor when joint is at limit
+    attribute float m_stopCFM;//!< Constraint force mixing factor when joint is at limit
+    attribute float m_bounce;//!< restitution factor
+    attribute boolean m_enableMotor;
+};
+
+
 interface btGeneric6DofConstraint {
   void btGeneric6DofConstraint([Ref] btRigidBody rbA, [Ref] btRigidBody rbB, [Ref] btTransform frameInA, [Ref] btTransform frameInB, boolean useLinearFrameReferenceFrameA);
   void btGeneric6DofConstraint([Ref] btRigidBody rbB, [Ref] btTransform frameInB, boolean useLinearFrameReferenceFrameB);
@@ -784,6 +803,10 @@ interface btGeneric6DofConstraint {
   void setLinearUpperLimit([Const, Ref] btVector3 linearUpper);
   void setAngularLowerLimit([Const, Ref] btVector3 angularLower);
   void setAngularUpperLimit([Const, Ref] btVector3 angularUpper);
+  
+  void getRotationalLimitMotor2(long index, [ Ref] btRotationalLimitMotor m);
+  void setRotationalLimitMotor(long index, [ Ref] btRotationalLimitMotor limot);
+
   [Const, Ref] btTransform getFrameOffsetA();
 };
 btGeneric6DofConstraint implements btTypedConstraint;

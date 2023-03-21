@@ -502,6 +502,27 @@ public:
     	return &m_angularLimits[index];
     }
 
+    void getRotationalLimitMotor2(int index, btRotationalLimitMotor &m)
+    {
+        m = m_angularLimits[index];
+    }
+
+    void setRotationalLimitMotor(int index, btRotationalLimitMotor limot)
+    {
+        m_angularLimits[index].m_targetVelocity = limot.m_targetVelocity;
+        m_angularLimits[index].m_maxMotorForce = limot.m_maxMotorForce;
+        m_angularLimits[index].m_limitSoftness = limot.m_limitSoftness;
+        m_angularLimits[index].m_loLimit = limot.m_loLimit;
+        m_angularLimits[index].m_hiLimit = limot.m_hiLimit;
+        m_angularLimits[index].m_normalCFM = limot.m_normalCFM;
+        m_angularLimits[index].m_stopERP = limot.m_stopERP;
+        m_angularLimits[index].m_stopCFM = limot.m_stopCFM;
+        m_angularLimits[index].m_bounce = limot.m_bounce;
+        m_angularLimits[index].m_currentLimit = limot.m_currentLimit;
+        m_angularLimits[index].m_currentLimitError = limot.m_currentLimitError;
+        m_angularLimits[index].m_enableMotor = limot.m_enableMotor;
+    }
+
     //! Retrieves the  limit informacion
     btTranslationalLimitMotor * getTranslationalLimitMotor()
     {
