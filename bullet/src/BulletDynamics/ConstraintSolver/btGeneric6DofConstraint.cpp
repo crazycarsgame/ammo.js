@@ -390,7 +390,9 @@ void btGeneric6DofConstraint::calculateAngleInfo()
 	m_calculatedAxis[1].normalize();
 	m_calculatedAxis[2].normalize();
 
-	printf("calculateAngleInfo : m_calculatedAxis x: %f, y: %f;z: %f; \n", m_calculatedAxis[0], m_calculatedAxis[1], m_calculatedAxis[2]);
+	printf("calculateAngleInfo : m_calculatedAxis[0] x: %f, y: %f;z: %f; \n", m_calculatedAxis[0][0], m_calculatedAxis[0][1], m_calculatedAxis[0][2]);
+	printf("calculateAngleInfo : m_calculatedAxis[1] x: %f, y: %f;z: %f; \n", m_calculatedAxis[1][0], m_calculatedAxis[1][1], m_calculatedAxis[1][2]);
+	printf("calculateAngleInfo : m_calculatedAxis[2] x: %f, y: %f;z: %f; \n", m_calculatedAxis[2][0], m_calculatedAxis[2][1], m_calculatedAxis[2][2]);
 
 }
 
