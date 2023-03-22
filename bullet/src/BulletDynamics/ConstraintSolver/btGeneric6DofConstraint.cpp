@@ -160,15 +160,14 @@ btScalar btRotationalLimitMotor::solveAngularLimits(
 	btRigidBody * body0, btRigidBody * body1 )
 {
 
-	printf("solveAngularLimits : m_currentLimit : %f, m_enableMotor: %f, m_currentLimit: %d \n", target_velocity, maxMotorForce, m_currentLimit);
+	printf("solveAngularLimits : m_currentLimit : %d \n", m_currentLimit);
 
 	if (needApplyTorques()==false) return 0.0f;
 
 	btScalar target_velocity = m_targetVelocity;
 	btScalar maxMotorForce = m_maxMotorForce;
-	if (== 0 && m_enableMotor == false) return false;
-
-	printf("solveAngularLimits : target_velocity: %f, maxMotorForce: %f, m_currentLimit: %d \n", target_velocity, maxMotorForce, m_currentLimit);
+	
+	printf("solveAngularLimits : target_velocity: %f, maxMotorForce: %f\n", target_velocity, maxMotorForce);
 
 	//current error correction
 	if (m_currentLimit!=0)
