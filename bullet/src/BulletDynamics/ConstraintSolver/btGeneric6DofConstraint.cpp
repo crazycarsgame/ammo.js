@@ -121,6 +121,7 @@ bool	matrixToEulerXYZ(const btMatrix3x3& mat,btVector3& xyz)
 
 int btRotationalLimitMotor::testLimitValue(btScalar test_value)
 {
+	printf("btRotationalLimitMotor::testLimitValue test_value: %f,m_loLimit : %f, m_hiLimit : %f, m_currentLimit : %d \n", test_value, m_loLimit, m_hiLimit, m_currentLimit);
 	if(m_loLimit>m_hiLimit)
 	{
 		m_currentLimit = 0;//Free from violation
