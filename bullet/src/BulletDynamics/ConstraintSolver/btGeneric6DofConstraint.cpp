@@ -537,7 +537,7 @@ void btGeneric6DofConstraint::buildJacobian()
 
 void btGeneric6DofConstraint::getInfo1 (btConstraintInfo1* info)
 {
-	printf("getinfos2 : %d \n", m_useSolveConstraintObsolete);
+	printf("getinfos1 : %d \n", m_useSolveConstraintObsolete);
 
 	if (m_useSolveConstraintObsolete)
 	{
@@ -878,8 +878,14 @@ int btGeneric6DofConstraint::get_limit_motor_info2(
         }
         // if we're limited low and high simultaneously, the joint motor is
         // ineffective
+
+
         if (limit && (limot->m_loLimit == limot->m_hiLimit)) powered = 0;
         info->m_constraintError[srow] = btScalar(0.f);
+
+
+		
+		printf("get_limit_motor_info2 - 2 limit:%d, powered : %d \n", limit, powered);
         if (powered)
         {
 			info->cfm[srow] = limot->m_normalCFM;
