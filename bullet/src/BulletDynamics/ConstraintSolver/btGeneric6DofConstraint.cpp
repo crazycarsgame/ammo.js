@@ -163,6 +163,9 @@ btScalar btRotationalLimitMotor::solveAngularLimits(
 	btScalar target_velocity = m_targetVelocity;
 	btScalar maxMotorForce = m_maxMotorForce;
 
+
+	printf("solveAngularLimits : target_velocity: %f, maxMotorForce: %f, m_currentLimit: %d \n", target_velocity, maxMotorForce, m_currentLimit);
+
 	//current error correction
 	if (m_currentLimit!=0)
 	{
@@ -184,8 +187,13 @@ btScalar btRotationalLimitMotor::solveAngularLimits(
 
 	btScalar rel_vel = axis.dot(vel_diff);
 
+	
+
 	// correction velocity
 	btScalar motor_relvel = m_limitSoftness*(target_velocity  - m_damping*rel_vel);
+
+
+	printf("solveAngularLimits : target_velocity: %f, motor_relvel : %f \n", target_velocity, motor_relvel);
 
 
 	if ( motor_relvel < SIMD_EPSILON && motor_relvel > -SIMD_EPSILON  )
@@ -371,6 +379,9 @@ void btGeneric6DofConstraint::calculateAngleInfo()
 	btVector3 axis0 = m_calculatedTransformB.getBasis().getColumn(0);
 	btVector3 axis2 = m_calculatedTransformA.getBasis().getColumn(2);
 
+	printf("calculateAngleInfo : axis 0  x: %f, y: %f;z: %f; \n", axis0[0], axis0[1], axis0[2]);
+	printf("calculateAngleInfo : axis 1  x: %f, y: %f;z: %f; \n", axis2[0], axis2[1], axis2[2]);
+
 	m_calculatedAxis[1] = axis2.cross(axis0);
 	m_calculatedAxis[0] = m_calculatedAxis[1].cross(axis2);
 	m_calculatedAxis[2] = axis0.cross(m_calculatedAxis[1]);
@@ -378,6 +389,8 @@ void btGeneric6DofConstraint::calculateAngleInfo()
 	m_calculatedAxis[0].normalize();
 	m_calculatedAxis[1].normalize();
 	m_calculatedAxis[2].normalize();
+
+	printf("calculateAngleInfo : m_calculatedAxis x: %f, y: %f;z: %f; \n", m_calculatedAxis[0], m_calculatedAxis[1], m_calculatedAxis[2]);
 
 }
 
@@ -674,13 +687,13 @@ int btGeneric6DofConstraint::setAngularLimits(btConstraintInfo2 *info, int row_o
 	for (int i=0;i<3 ;i++ )
 	{
 
-		printf("setAngularLimits : %d ", i);
+		printf("setAngularLimits : %d \n", i);
 
 		if(d6constraint->getRotationalLimitMotor(i)->needApplyTorques())
 		{
 			btVector3 axis = d6constraint->getAxis(i);
 
-			printf("setAngularLimits axis x : %f, axis y : %f, axis z : %f ", axis[0], axis[1], axis[2]);
+			printf("setAngularLimits axis x : %f, axis y : %f, axis z : %f \n", axis[0], axis[1], axis[2]);
 
 			int flags = m_flags >> ((i + 3) * BT_6DOF_FLAGS_AXIS_SHIFT);
 			if(!(flags & BT_6DOF_FLAGS_CFM_NORM))
@@ -760,8 +773,8 @@ void btGeneric6DofConstraint::calcAnchorPos(void)
 	m_AnchorPos = pA * weight + pB * (btScalar(1.0) - weight);
 
 
-	printf("calcAnchorPos pAx :%f, pAy :%f, pAz :%f -- pBx :%f, pBy :%f, pBz :%f ", pA[0], pA[1], pA[2], pB[0], pB[1], pB[2]);
-	printf("calcAnchorPos AnchorX :%f, AnchorY :%f, AnchorZ :%f  ", m_AnchorPos[0], m_AnchorPos[1], m_AnchorPos[2]);
+	printf("calcAnchorPos pAx :%f, pAy :%f, pAz :%f -- pBx :%f, pBy :%f, pBz :%f \n", pA[0], pA[1], pA[2], pB[0], pB[1], pB[2]);
+	printf("calcAnchorPos AnchorX :%f, AnchorY :%f, AnchorZ :%f  \n", m_AnchorPos[0], m_AnchorPos[1], m_AnchorPos[2]);
 		
 
 	return;
@@ -791,7 +804,7 @@ int btGeneric6DofConstraint::get_limit_motor_info2(
     int powered = limot->m_enableMotor;
     int limit = limot->m_currentLimit;
 
-	printf("get_limit_motor_info2 limit:%d, powered : %d,  srow  : %d, rotational : %d, rotAllowed : %d ", limit, powered, srow, rotational, rotAllowed);
+	printf("get_limit_motor_info2 limit:%d, powered : %d,  srow  : %d, rotational : %d, rotAllowed : %d \n", limit, powered, srow, rotational, rotAllowed);
 
     if (powered || limit)
     {   // if the joint is powered, or has joint limits, add in the extra row
