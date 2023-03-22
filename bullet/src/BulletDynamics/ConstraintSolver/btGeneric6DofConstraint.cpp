@@ -159,11 +159,14 @@ btScalar btRotationalLimitMotor::solveAngularLimits(
 	btScalar timeStep,btVector3& axis,btScalar jacDiagABInv,
 	btRigidBody * body0, btRigidBody * body1 )
 {
+
+	printf("solveAngularLimits : m_currentLimit : %f, m_enableMotor: %f, m_currentLimit: %d \n", target_velocity, maxMotorForce, m_currentLimit);
+
 	if (needApplyTorques()==false) return 0.0f;
 
 	btScalar target_velocity = m_targetVelocity;
 	btScalar maxMotorForce = m_maxMotorForce;
-
+	if (== 0 && m_enableMotor == false) return false;
 
 	printf("solveAngularLimits : target_velocity: %f, maxMotorForce: %f, m_currentLimit: %d \n", target_velocity, maxMotorForce, m_currentLimit);
 
@@ -535,6 +538,8 @@ void btGeneric6DofConstraint::buildJacobian()
 
 void btGeneric6DofConstraint::getInfo1 (btConstraintInfo1* info)
 {
+	printf("getinfos2 : %d \n", m_useSolveConstraintObsolete);
+
 	if (m_useSolveConstraintObsolete)
 	{
 		info->m_numConstraintRows = 0;
@@ -593,6 +598,9 @@ void btGeneric6DofConstraint::getInfo2 (btConstraintInfo2* info)
 	const btVector3& angVelA = m_rbA.getAngularVelocity();
 	const btVector3& angVelB = m_rbB.getAngularVelocity();
 
+
+	printf("getinfos2 : %d  \n", m_useOffsetForConstraintFrame);
+
 	if(m_useOffsetForConstraintFrame)
 	{ // for stability better to solve angular limits first
 		int row = setAngularLimits(info, 0,transA,transB,linVelA,linVelB,angVelA,angVelB);
@@ -613,7 +621,7 @@ void btGeneric6DofConstraint::getInfo2NonVirtual (btConstraintInfo2* info, const
 	btAssert(!m_useSolveConstraintObsolete);
 	//prepare constraint
 	calculateTransforms(transA,transB);
-
+	printf("getInfo2NonVirtual : %d \n", m_useOffsetForConstraintFrame);
 	int i;
 	for (i=0;i<3 ;i++ )
 	{
