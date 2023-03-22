@@ -809,6 +809,7 @@ interface btGeneric6DofConstraint {
   void setRotationalLimitMotor(long index, [ Ref] btRotationalLimitMotor limot);
 
   [Const, Ref] btTransform getFrameOffsetA();
+  [Const, Ref] btTransform getFrameOffsetB();
 };
 btGeneric6DofConstraint implements btTypedConstraint;
 
