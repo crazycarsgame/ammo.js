@@ -803,6 +803,7 @@ interface btGeneric6DofConstraint {
   void setLinearUpperLimit([Const, Ref] btVector3 linearUpper);
   void setAngularLowerLimit([Const, Ref] btVector3 angularLower);
   void setAngularUpperLimit([Const, Ref] btVector3 angularUpper);
+  void setAxis([Const, Ref] btVector3 axis1, [Const, Ref] btVector3 axis2);
   
   void getRotationalLimitMotor2(long index, [ Ref] btRotationalLimitMotor m);
   void setRotationalLimitMotor(long index, [ Ref] btRotationalLimitMotor limot);
