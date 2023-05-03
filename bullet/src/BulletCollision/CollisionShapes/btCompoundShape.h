@@ -161,6 +161,7 @@ public:
 	///shape to be centered at the center of mass and to coincide with the principal axes. This also necessitates a correction of the world transform
 	///of the collision object by the principal transform.
 	void calculatePrincipalAxisTransform(btScalar* masses, btTransform& principal, btVector3& inertia) const;
+	void calculatePrincipalAxisTransform2(btScalar mass1, btScalar mass2, btTransform& principal, btVector3& inertia) const;
 
 	int	getUpdateRevision() const
 	{

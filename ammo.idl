@@ -417,6 +417,7 @@ interface btCompoundShape {
   [Const] long getNumChildShapes();
   btCollisionShape getChildShape(long index);
   void updateChildTransform(long childIndex, [Const, Ref] btTransform newChildTransform, optional boolean shouldRecalculateLocalAabb);
+  void calculatePrincipalAxisTransform2(float mass1, float mass2, [Ref] btTransform principal, [Ref] btVector3 inertia);
   void setMargin(float margin);
   float getMargin();
 };

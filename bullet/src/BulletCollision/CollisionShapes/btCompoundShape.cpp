@@ -209,7 +209,12 @@ void	btCompoundShape::calculateLocalInertia(btScalar mass,btVector3& inertia) co
 }
 
 
+void btCompoundShape::calculatePrincipalAxisTransform2(btScalar mass1, btScalar mass2, btTransform& principal, btVector3& inertia) const
+{
+	btScalar m[2] = { mass1, mass2 };
+	calculatePrincipalAxisTransform(m, principal, inertia);
 
+}
 
 void btCompoundShape::calculatePrincipalAxisTransform(btScalar* masses, btTransform& principal, btVector3& inertia) const
 {
