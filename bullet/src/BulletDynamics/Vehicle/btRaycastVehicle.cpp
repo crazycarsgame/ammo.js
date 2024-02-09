@@ -772,7 +772,7 @@ void* btDefaultVehicleRaycaster::castRay(const btVector3& from,const btVector3& 
 		rayCallback.m_collisionFilterMask = collisionFilterMask;
 		rayCallback.m_collisionFilterGroup = collisionFilterGroup;
 
-		printf("btDefaultVehicleRaycaster::castRa %d %d \n", rayCallback.m_collisionFilterMask, rayCallback.m_collisionFilterMask);
+		printf("btDefaultVehicleRaycaster::castRa %d %d \n", rayCallback.m_collisionFilterGroup, rayCallback.m_collisionFilterMask);
 	}
 
 	m_dynamicsWorld->rayTest(from, to, rayCallback);
