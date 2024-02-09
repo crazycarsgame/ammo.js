@@ -984,7 +984,7 @@ interface btVehicleRaycaster {
 interface btDefaultVehicleRaycaster {
   void btDefaultVehicleRaycaster(btDynamicsWorld world);
   void set_m_interpolateNormals(long on);
-  void setCollisionFilter(long group, long mask, boolean enable);
+  void setCollisionFilter(short group, short mask, boolean enable);
 };
 btDefaultVehicleRaycaster implements btVehicleRaycaster;
 

@@ -16,13 +16,9 @@
 /// btVehicleRaycaster is provides interface for between vehicle simulation and raycasting
 struct btVehicleRaycaster
 {
-	bool useFilter;
-	int collisionFilterMask;
-	int collisionFilterGroup;
-
-	virtual ~btVehicleRaycaster()
-	{
-	}
+virtual ~btVehicleRaycaster()
+{
+}
 	struct btVehicleRaycasterResult
 	{
 		btVehicleRaycasterResult() :m_distFraction(btScalar(-1.)){};

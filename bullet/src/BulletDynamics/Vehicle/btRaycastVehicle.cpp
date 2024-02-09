@@ -754,12 +754,11 @@ void btDefaultVehicleRaycaster::set_m_interpolateNormals(long on)
 	this->m_interpolateNormals = on;
 }
 
-void btDefaultVehicleRaycaster::setCollisionFilter(int group, int mask, bool enable) {
+void btDefaultVehicleRaycaster::setCollisionFilter(short group, short mask, bool enable) {
 
 	useFilter = enable;
 	collisionFilterMask = mask;
 	collisionFilterGroup = group;;
-
 }
 
 void* btDefaultVehicleRaycaster::castRay(const btVector3& from,const btVector3& to, btVehicleRaycasterResult& result)

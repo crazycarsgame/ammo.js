@@ -227,7 +227,9 @@ class btDefaultVehicleRaycaster : public btVehicleRaycaster
 {
 	btDynamicsWorld*	m_dynamicsWorld;
 public:
-
+	bool useFilter;
+	short collisionFilterMask;
+	short collisionFilterGroup;
 
 	int m_interpolateNormals;
 	btDefaultVehicleRaycaster(btDynamicsWorld* world)
@@ -244,7 +246,7 @@ public:
 
 	virtual void* castRay(const btVector3& from,const btVector3& to, btVehicleRaycasterResult& result);
 	void set_m_interpolateNormals(long on);
-	void setCollisionFilter(int group, int mask, bool enable);
+	void setCollisionFilter(short group, short mask, bool enable);
 };
 
 // Write a ray result callback that saves the shapePart and triangleIndex
