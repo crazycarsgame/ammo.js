@@ -754,13 +754,29 @@ void btDefaultVehicleRaycaster::set_m_interpolateNormals(long on)
 	this->m_interpolateNormals = on;
 }
 
+void btDefaultVehicleRaycaster::setCollisionFilter(int group, int mask, bool enable) {
+
+	useFilter = enable;
+	collisionFilterMask = mask;
+	collisionFilterGroup = group;;
+
+}
+
 void* btDefaultVehicleRaycaster::castRay(const btVector3& from,const btVector3& to, btVehicleRaycasterResult& result)
 {
 //	RayResultCallback& resultCallback;
 
 	SmoothRayCastResultCallback rayCallback(from,to);
 
+	if (useFilter)
+	{
+		rayCallback.m_collisionFilterMask = collisionFilterMask;
+		rayCallback.m_collisionFilterGroup = collisionFilterGroup;
+	}
+
 	m_dynamicsWorld->rayTest(from, to, rayCallback);
+
+
 
 	if (rayCallback.hasHit())
 	{

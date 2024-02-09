@@ -69,6 +69,7 @@ private:
 	btScalar	m_steeringValue; 
 	btScalar m_currentVehicleSpeedKmHour;
 
+	
 	btRigidBody* m_chassisBody;
 
 	int m_indexRightAxis;
@@ -227,12 +228,23 @@ class btDefaultVehicleRaycaster : public btVehicleRaycaster
 	btDynamicsWorld*	m_dynamicsWorld;
 public:
 
+	bool useFilter;
+	int collisionFilterMask;
+	int collisionFilterGroup;
+
 	int m_interpolateNormals;
 	btDefaultVehicleRaycaster(btDynamicsWorld* world)
 		:m_dynamicsWorld(world)
 	{
 		m_interpolateNormals = 0;
+		useFilter = false;
+		collisionFilterMask = 0;
+		collisionFilterGroup = 0;
+
 	}
+
+	void setCollisionFilter(int group, int mask, bool enable);
+
 
 	virtual void* castRay(const btVector3& from,const btVector3& to, btVehicleRaycasterResult& result);
 	void set_m_interpolateNormals(long on);
