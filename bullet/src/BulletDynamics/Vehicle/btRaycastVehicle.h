@@ -75,6 +75,7 @@ private:
 	int m_indexRightAxis;
 	int m_indexUpAxis;
 	int	m_indexForwardAxis;
+	btScalar m_sideFrictionStiffness2;
 
 	void defaultInit(const btVehicleTuning& tuning);
 
@@ -143,6 +144,8 @@ public:
 	}
 	
 	void	updateSuspension(btScalar deltaTime);
+
+	void	setSideFrictionStiffness2(btScalar sideFric);
 
 	virtual void	updateFriction(btScalar	timeStep);
 

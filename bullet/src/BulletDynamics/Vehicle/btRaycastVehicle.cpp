@@ -527,7 +527,14 @@ btScalar calcRollingFriction(btWheelContactPoint& contactPoint)
 
 
 
-btScalar sideFrictionStiffness2 = btScalar(1.0);
+
+
+void btRaycastVehicle::setSideFrictionStiffness2(btScalar sideFric) {
+
+	m_sideFrictionStiffness2 = sideFric;
+
+}
+
 void	btRaycastVehicle::updateFriction(btScalar	timeStep)
 {
 
@@ -589,7 +596,7 @@ void	btRaycastVehicle::updateFriction(btScalar	timeStep)
 							  *groundObject, wheelInfo.m_raycastInfo.m_contactPointWS,
 							  btScalar(0.), m_axle[i],m_sideImpulse[i],timeStep);
 
-					m_sideImpulse[i] *= sideFrictionStiffness2;
+					m_sideImpulse[i] *= m_sideFrictionStiffness2;
 						
 				}
 				
