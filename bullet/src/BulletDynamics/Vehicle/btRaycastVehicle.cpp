@@ -45,6 +45,9 @@ m_pitchControl(btScalar(0.))
 	m_indexRightAxis = 0;
 	m_indexUpAxis = 2;
 	m_indexForwardAxis = 1;
+
+	m_sideFrictionStiffness2 = 1.0;
+	m_sideFactor = 1.0;
 	defaultInit(tuning);
 }
 
@@ -529,9 +532,10 @@ btScalar calcRollingFriction(btWheelContactPoint& contactPoint)
 
 
 
-void btRaycastVehicle::setSideFrictionStiffness2(btScalar sideFric) {
+void btRaycastVehicle::setSideFrictionStiffness2(btScalar sideFric, btScalar sideFactor) {
 
 	m_sideFrictionStiffness2 = sideFric;
+	m_sideFactor = sideFactor;
 
 }
 
@@ -604,7 +608,7 @@ void	btRaycastVehicle::updateFriction(btScalar	timeStep)
 			}
 		}
 
-	btScalar sideFactor = btScalar(1.);
+	//btScalar sideFactor = btScalar(1.);
 	btScalar fwdFactor = 0.5;
 
 	bool sliding = false;
@@ -651,7 +655,7 @@ void	btRaycastVehicle::updateFriction(btScalar	timeStep)
 				m_forwardImpulse[wheel] = rollingFriction;//wheelInfo.m_engineForce* timeStep;
 
 				btScalar x = (m_forwardImpulse[wheel] ) * fwdFactor;
-				btScalar y = (m_sideImpulse[wheel] ) * sideFactor;
+				btScalar y = (m_sideImpulse[wheel] ) * m_sideFactor;
 				
 				btScalar impulseSquared = (x*x + y*y);
 
