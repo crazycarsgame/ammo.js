@@ -763,6 +763,7 @@ void	btRaycastVehicle::debugDraw(btIDebugDraw* debugDrawer)
 void btDefaultVehicleRaycaster::set_m_interpolateNormals(long on)
 {
 	this->m_interpolateNormals = on;
+	printf("m_interpolateNormals  %d ", m_interpolateNormals);
 }
 
 void btDefaultVehicleRaycaster::setCollisionFilter(short group, short mask, bool enable) {
@@ -800,6 +801,8 @@ void* btDefaultVehicleRaycaster::castRay(const btVector3& from,const btVector3& 
 			result.m_hitNormalInWorld = rayCallback.m_hitNormalWorld;
 			result.m_hitNormalInWorld.normalize();
 			result.m_distFraction = rayCallback.m_closestHitFraction;
+
+			printf("this->m_interpolateNormals  %d ", this->m_interpolateNormals);
 
 			if (this->m_interpolateNormals >0 )
 			{
