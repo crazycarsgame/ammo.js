@@ -127,8 +127,10 @@ void btGeneric6DofSpringConstraint::internalUpdateSprings(btConstraintInfo2* inf
 			btScalar currPos = m_calculatedLinearDiff[i];
 			// calculate difference
 			btScalar delta = currPos - m_equilibriumPoint[i];
+			btScalar factor = delta < 0 ? 2.0 : 1.0;
+
 			// spring force is (delta * m_stiffness) according to Hooke's Law
-			btScalar force = delta * m_springStiffness[i];
+			btScalar force = delta * m_springStiffness[i] * factor;
 			btScalar velFactor = info->fps * m_springDamping[i] / btScalar(info->m_numIterations);
 			m_linearLimits.m_targetVelocity[i] =  velFactor * force;
 			m_linearLimits.m_maxMotorForce[i] =  btFabs(force) / info->fps;
