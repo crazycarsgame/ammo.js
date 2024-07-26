@@ -507,6 +507,11 @@ public:
         m = m_angularLimits[index];
     }
 
+	void setTranslationalLimitMotor(long axis, bool enable, float force) {
+		m_linearLimits.m_enableMotor[axis] = enable;
+		m_linearLimits.m_maxMotorForce[axis] = force;
+	}
+
     void setRotationalLimitMotor(int index, btRotationalLimitMotor limot)
     {
         m_angularLimits[index].m_targetVelocity = limot.m_targetVelocity;
@@ -528,6 +533,8 @@ public:
     {
     	return &m_linearLimits;
     }
+
+
 
     //first 3 are linear, next 3 are angular
     void setLimit(int axis, btScalar lo, btScalar hi)
