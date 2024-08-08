@@ -475,6 +475,7 @@ btTriangleMeshShape implements btConcaveShape;
 
 interface btBvhTriangleMeshShape {
   void btBvhTriangleMeshShape(btStridingMeshInterface meshInterface, boolean useQuantizedAabbCompression, optional boolean buildBvh);
+  void GenerateInternalEdgeInfo();
 };
 btBvhTriangleMeshShape implements btTriangleMeshShape;
 

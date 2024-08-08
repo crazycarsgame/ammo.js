@@ -14,10 +14,13 @@ subject to the following restrictions:
 */
 
 //#define DISABLE_BVH
-
+#include "BulletCollision/CollisionDispatch/btManifoldResult.h"
 #include "BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h"
 #include "BulletCollision/CollisionShapes/btOptimizedBvh.h"
+#include "BulletCollision/CollisionDispatch/btInternalEdgeUtility.h"
 #include "LinearMath/btSerializer.h"
+
+extern ContactAddedCallback gContactAddedCallback;
 
 ///Bvh Concave triangle mesh is a static-triangle mesh shape with Bounding Volume Hierarchy optimization.
 ///Uses an interface to access the triangles to allow for sharing graphics/physics triangles.
@@ -448,6 +451,21 @@ void	btBvhTriangleMeshShape::serializeSingleBvh(btSerializer* serializer) const
 		const char* structType = m_bvh->serialize(chunk->m_oldPtr, serializer);
 		serializer->finalizeChunk(chunk,structType,BT_QUANTIZED_BVH_CODE,(void*)m_bvh);
 	}
+}
+
+bool MyContactAddedCallback(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1)
+{
+	btAdjustInternalEdgeContacts(cp, colObj1Wrap, colObj0Wrap, partId1, index1);
+	return true;
+}
+
+void	btBvhTriangleMeshShape::GenerateInternalEdgeInfo() {
+
+
+	gContactAddedCallback = MyContactAddedCallback;
+
+	btTriangleInfoMap* triangleInfoMap = new btTriangleInfoMap();
+	btGenerateInternalEdgeInfo(this, triangleInfoMap);
 }
 
 void	btBvhTriangleMeshShape::serializeSingleTriangleInfoMap(btSerializer* serializer) const

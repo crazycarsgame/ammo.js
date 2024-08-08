@@ -57,7 +57,7 @@ public:
 	{
 		return m_ownsBvh;
 	}
-
+	void	GenerateInternalEdgeInfo();
 
 	
 	void performRaycast (btTriangleCallback* callback, const btVector3& raySource, const btVector3& rayTarget);

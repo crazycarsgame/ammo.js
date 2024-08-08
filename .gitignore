@@ -198,3 +198,7 @@ bullet/src/BulletDynamics/BulletDynamics.vcxproj.user
 .vs/ammo/FileContentIndex/36f9576f-d8ec-4df7-8744-a3e2c5cf644f.vsidx
 .vs/ammo/FileContentIndex/0bac1f07-d21b-4bf8-8d76-b73e632396b7.vsidx
 .vs/ammo/FileContentIndex/a320c878-23c7-46a8-8800-011dc4e7328f.vsidx
+*.ipch
+*.db
+*.log
+*.user
