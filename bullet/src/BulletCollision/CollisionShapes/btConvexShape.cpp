@@ -196,7 +196,36 @@ btVector3 btConvexShape::localGetSupportVertexWithoutMarginNonVirtual (const btV
 			btAssert(0);
 		break;
 		};
+		btScalar radius = 1.0;
+		btScalar halfHeight = 1;
 
+
+		btVector3 tmp;
+		btScalar d;
+
+		btScalar s = btSqrt(v[XX] * v[XX] + v[ZZ] * v[ZZ]);
+		if (s != btScalar(0.0))
+		{
+			d = radius / s;
+			tmp[XX] = v[XX] * d;
+			tmp[YY] = v[YY] < 0.0 ? -halfHeight : halfHeight;
+			tmp[ZZ] = v[ZZ] * d;
+			//return tmp;
+		}
+		else
+		{
+			tmp[XX] = radius;
+			tmp[YY] = v[YY] < 0.0 ? -halfHeight : halfHeight;
+			tmp[ZZ] = btScalar(0.0);
+			//return tmp;
+		}
+
+		tmp[XX] *= halfExtents[XX];
+		tmp[YY] *= halfExtents[YY];
+		tmp[ZZ] *= halfExtents[ZZ];
+
+		return tmp;
+		/*
 		btScalar radius = halfExtents[XX];
 		btScalar halfHeight = halfExtents[cylinderUpAxis];
 
@@ -217,6 +246,7 @@ btVector3 btConvexShape::localGetSupportVertexWithoutMarginNonVirtual (const btV
 			tmp[ZZ] = btScalar(0.0);
 			return btVector3(tmp.getX(),tmp.getY(),tmp.getZ());
 		}
+		*/
 	}
 	case CAPSULE_SHAPE_PROXYTYPE:
 	{
