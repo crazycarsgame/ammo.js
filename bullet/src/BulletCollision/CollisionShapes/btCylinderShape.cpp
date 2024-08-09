@@ -119,7 +119,47 @@ void	btCylinderShape::calculateLocalInertia(btScalar mass,btVector3& inertia) co
 #endif //USE_BOX_INERTIA_APPROXIMATION
 }
 
+SIMD_FORCE_INLINE  btVector3 CylinderLocalSupportY(const btVector3& halfExtents, const btVector3& v)
+{
+	const int cylinderUpAxis = 1;
+	const int XX = 0;
+	const int YY = 1;
+	const int ZZ = 2;
 
+
+	//btScalar radius = halfExtents[XX];
+	//btScalar halfHeight = halfExtents[cylinderUpAxis];
+	btScalar radius = 1.0;
+	btScalar halfHeight = 1;
+
+
+	btVector3 tmp;
+	btScalar d;
+
+	btScalar s = btSqrt(v[XX] * v[XX] + v[ZZ] * v[ZZ]);
+	if (s != btScalar(0.0))
+	{
+		d = radius / s;
+		tmp[XX] = v[XX] * d;
+		tmp[YY] = v[YY] < 0.0 ? -halfHeight : halfHeight;
+		tmp[ZZ] = v[ZZ] * d;
+		//return tmp;
+	}
+	else
+	{
+		tmp[XX] = radius;
+		tmp[YY] = v[YY] < 0.0 ? -halfHeight : halfHeight;
+		tmp[ZZ] = btScalar(0.0);
+		//return tmp;
+	}
+
+	tmp[XX] *= halfExtents[XX];
+	tmp[YY] *= halfExtents[YY];
+	tmp[ZZ] *= halfExtents[ZZ];
+
+	return tmp;
+}
+/*
 SIMD_FORCE_INLINE btVector3 CylinderLocalSupportX(const btVector3& halfExtents,const btVector3& v) 
 {
 const int cylinderUpAxis = 0;
@@ -158,7 +198,7 @@ const int ZZ = 2;
 
 }
 
-
+*/
 
 
 

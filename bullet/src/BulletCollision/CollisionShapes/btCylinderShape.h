@@ -40,7 +40,17 @@ BT_DECLARE_ALIGNED_ALLOCATOR();
 		halfExtents += margin;
 		return halfExtents;
 	}
-	
+	virtual void	setLocalScaling(const btVector3& scaling)
+	{
+		btVector3 oldMargin(getMargin(), getMargin(), getMargin());
+		btVector3 implicitShapeDimensionsWithMargin = m_implicitShapeDimensions + oldMargin;
+		btVector3 unScaledImplicitShapeDimensionsWithMargin = implicitShapeDimensionsWithMargin / m_localScaling;
+
+		btConvexInternalShape::setLocalScaling(scaling);
+
+		m_implicitShapeDimensions = (unScaledImplicitShapeDimensionsWithMargin * m_localScaling) - oldMargin;
+
+	}
 	const btVector3& getHalfExtentsWithoutMargin() const
 	{
 		return m_implicitShapeDimensions;//changed in Bullet 2.63: assume the scaling and margin are included
