@@ -1069,6 +1069,7 @@ interface btKinematicCharacterController {
   void jump ();
   void setGravity (float gravity);
   float getGravity ();
+  void stepUp(btCollisionWorld collisionWorld);
   void setMaxSlope (float slopeRadians);
   float getMaxSlope ();
   btPairCachingGhostObject getGhostObject ();
