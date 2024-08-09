@@ -159,7 +159,7 @@ SIMD_FORCE_INLINE  btVector3 CylinderLocalSupportY(const btVector3& halfExtents,
 
 	return tmp;
 }
-/*
+
 SIMD_FORCE_INLINE btVector3 CylinderLocalSupportX(const btVector3& halfExtents,const btVector3& v) 
 {
 const int cylinderUpAxis = 0;
@@ -198,11 +198,11 @@ const int ZZ = 2;
 
 }
 
-*/
 
 
 
 
+/*
 inline  btVector3 CylinderLocalSupportY(const btVector3& halfExtents,const btVector3& v) 
 {
 
@@ -237,7 +237,7 @@ const int ZZ = 2;
     }
 
 }
-
+*/
 inline btVector3 CylinderLocalSupportZ(const btVector3& halfExtents,const btVector3& v) 
 {
 const int cylinderUpAxis = 2;
